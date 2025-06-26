@@ -7,7 +7,7 @@ part of 'swipe_study_notifier.dart';
 // **************************************************************************
 
 String _$swipeStudyNotifierHash() =>
-    r'8484bcd7cc0325f8a5b1bc07af47c3bc331e4842';
+    r'3c64327e3a388fd02186b183de93040a4078914b';
 
 /// See also [SwipeStudyNotifier].
 @ProviderFor(SwipeStudyNotifier)

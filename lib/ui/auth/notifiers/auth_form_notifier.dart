@@ -180,14 +180,14 @@ class AuthFormNotifier extends _$AuthFormNotifier {
   bool validateForLogin() {
     final errors = <String, String>{};
 
-    if (state.userId.isEmpty) {
-      errors['userId'] = 'ユーザーIDを入力してください';
-    }
     if (state.email.isEmpty) {
       errors['email'] = 'メールアドレスを入力してください';
+    } else if (!_isValidEmail(state.email)) {
+      errors['email'] = '正しいメールアドレスを入力してください';
     }
-    if (state.userName.isEmpty) {
-      errors['userName'] = 'ユーザー名を入力してください';
+
+    if (state.password.isEmpty) {
+      errors['password'] = 'パスワードを入力してください';
     }
 
     state = state.copyWith(errors: errors, isValid: errors.isEmpty);
@@ -220,9 +220,8 @@ class AuthFormNotifier extends _$AuthFormNotifier {
   /// Calculate if form is valid based on current errors and required fields
   bool _calculateIsValid(Map<String, String> errors) {
     return errors.isEmpty &&
-        state.userId.isNotEmpty &&
         state.email.isNotEmpty &&
-        state.userName.isNotEmpty;
+        state.password.isNotEmpty;
   }
 
   /// Email validation regex

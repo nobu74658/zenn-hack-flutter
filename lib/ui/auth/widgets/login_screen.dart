@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gen_flash_english_study/domain/models/auth/auth_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,26 +20,23 @@ class LoginScreen extends HookConsumerWidget {
     final formState = ref.watch(authFormNotifierProvider);
 
     // Listen to auth state changes
-    ref.listen<AuthState>(authNotifierProvider, (previous, next) {
-      next.when(
-        initial: () {},
-        loading: () {},
-        authenticated: (user) {
+    ref.listen(authNotifierProvider, (previous, next) {
+      if (next.hasValue) {
+        final state = next.value!;
+        if (state.isAuthenticated) {
           // Navigate to home on successful login
           context.go(RouteNames.home);
-        },
-        unauthenticated: () {},
-        error: (message) {
+        } else if (state.error != null) {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(message),
+              content: Text(state.error!),
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
             ),
           );
-        },
-      );
+        }
+      }
     });
 
     return Scaffold(
@@ -135,18 +133,6 @@ class LoginScreen extends HookConsumerWidget {
   ) {
     return Column(
       children: [
-        // User ID field
-        AuthTextField(
-          label: 'ユーザーID',
-          onChanged: formNotifier.updateUserId,
-          errorText: formNotifier.getErrorFor('userId'),
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.next,
-          autofocus: true,
-        ),
-
-        const SizedBox(height: 20),
-
         // Email field
         AuthTextField(
           label: 'メールアドレス',
@@ -154,16 +140,16 @@ class LoginScreen extends HookConsumerWidget {
           errorText: formNotifier.getErrorFor('email'),
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
+          autofocus: true,
         ),
 
         const SizedBox(height: 20),
 
-        // User name field
-        AuthTextField(
-          label: 'ユーザー名',
-          onChanged: formNotifier.updateUserName,
-          errorText: formNotifier.getErrorFor('userName'),
-          keyboardType: TextInputType.text,
+        // Password field
+        AuthPasswordField(
+          label: 'パスワード',
+          onChanged: formNotifier.updatePassword,
+          errorText: formNotifier.getErrorFor('password'),
           textInputAction: TextInputAction.done,
           onSubmitted: (_) => _handleLogin(context, ref, formState),
         ),
@@ -174,12 +160,12 @@ class LoginScreen extends HookConsumerWidget {
   Widget _buildLoginButton(
     BuildContext context,
     WidgetRef ref,
-    AuthState authState,
+    AsyncValue<AuthState> authState,
     FormValidationState formState,
   ) {
-    final isLoading = authState.whenOrNull(loading: () => true) ?? false;
-    final formNotifier = ref.read(authFormNotifierProvider.notifier);
-    final isValid = formNotifier.validateForLogin();
+    final isLoading = authState.value?.isLoading ?? false;
+    // Check if form is valid without triggering validation
+    final isValid = formState.email.isNotEmpty && formState.password.isNotEmpty;
 
     return AuthButton(
       onPressed:
@@ -250,7 +236,10 @@ class LoginScreen extends HookConsumerWidget {
     final formNotifier = ref.read(authFormNotifierProvider.notifier);
 
     if (formNotifier.validateForLogin()) {
-      authNotifier.login(formState.userId, formState.email, formState.userName);
+      authNotifier.signInWithEmailAndPassword(
+        email: formState.email,
+        password: formState.password,
+      );
     }
   }
 }

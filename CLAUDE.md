@@ -317,3 +317,9 @@ class ModelName with _$ModelName {
 - `dart analyze`で問題が残っている状態でタスクを完了してはいけません
 - **analysis_options.yamlの変更は絶対に禁止** - lint規則を無効化してはいけません
 - 警告やエラーはコード修正で解決すること
+
+## After Task Completion
+- タスクの実行内容を以下のコマンドで読み上げる
+```bash
+say -v kyoko "{タスク内容}"
+```

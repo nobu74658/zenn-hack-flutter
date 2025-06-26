@@ -74,4 +74,13 @@ extension ResultExtensions<T> on Result<T> {
     Ok(data: final data) => mapper(data),
     Error(exception: final exception) => Error(exception),
   };
+
+  /// Pattern matching for result handling
+  R when<R>({
+    required R Function(T data) ok,
+    required R Function(AppException error) error,
+  }) => switch (this) {
+    Ok(data: final data) => ok(data),
+    Error(exception: final exception) => error(exception),
+  };
 }
