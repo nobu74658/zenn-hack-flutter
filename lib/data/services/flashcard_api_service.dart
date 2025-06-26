@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import '../../core/constants/api_endpoints.dart';
 import '../../core/exceptions/app_exception.dart';
 import '../../core/utils/result.dart';
@@ -21,8 +23,9 @@ class FlashcardApiService {
       if (response.data == null) {
         return const Error(ApiException('フラッシュカードデータの取得に失敗しました'));
       }
-
+      debugPrint('Fetched flashcards for user: $userId');
       final flashcardsResponse = FlashcardListResponse.fromJson(response.data!);
+      debugPrint('Flashcards fetched: ${flashcardsResponse.flashcards.length}');
       return Ok(flashcardsResponse.flashcards);
     } on AppException catch (e) {
       return Error(e);

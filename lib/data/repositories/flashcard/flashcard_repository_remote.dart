@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../core/utils/result.dart';
 import '../../../domain/models/flashcard/flashcard.dart';
 import '../../services/flashcard_api_service.dart';
@@ -11,6 +13,7 @@ class FlashcardRepositoryRemote implements FlashcardRepository {
 
   @override
   Future<Result<List<Flashcard>>> getUserFlashcards(String userId) {
+    debugPrint('Fetching flashcards for user: $userId');
     return _apiService.getUserFlashcards(userId);
   }
 

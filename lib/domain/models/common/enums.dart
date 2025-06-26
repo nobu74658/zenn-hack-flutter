@@ -1,3 +1,5 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 /// Learning status for flashcards
 enum LearningStatus {
   /// Not yet studied
@@ -25,17 +27,29 @@ extension LearningStatusExtension on LearningStatus {
 
 /// Part of speech types - aligned with frontend
 enum PartOfSpeech {
+  @JsonValue('noun')
   noun,
+  @JsonValue('pronoun')
   pronoun,
+  @JsonValue('intransitiveVerb')
   intransitiveVerb,
+  @JsonValue('transitiveVerb')
   transitiveVerb,
+  @JsonValue('adjective')
   adjective,
+  @JsonValue('adverb')
   adverb,
+  @JsonValue('auxiliaryVerb')
   auxiliaryVerb,
+  @JsonValue('preposition')
   preposition,
+  @JsonValue('article')
   article,
+  @JsonValue('interjection')
   interjection,
+  @JsonValue('conjunction')
   conjunction,
+  @JsonValue('idiom')
   idiom,
 }
 

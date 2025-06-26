@@ -20,25 +20,26 @@ class Flashcard with _$Flashcard {
     /// List of meanings
     required List<Meaning> meanings,
 
-    /// Media object
-    required Media media,
+    /// Media object (optional for API responses)
+    Media? media,
 
-    /// Version number
-    required int version,
+    /// Version number (defaults to 1)
+    @Default(1) int version,
 
-    /// User memo
-    required String memo,
+    /// User memo (defaults to empty string)
+    @Default('') String memo,
 
-    /// Whether the user has mastered this card
-    required bool checkFlag,
+    /// Whether the user has mastered this card (defaults to false)
+    @Default(false) bool checkFlag,
 
-    /// Creation timestamp
-    required DateTime createdAt,
+    /// Creation timestamp (defaults to current time)
+    DateTime? createdAt,
   }) = _Flashcard;
 
   factory Flashcard.fromJson(Map<String, Object?> json) =>
       _$FlashcardFromJson(json);
 }
+
 
 /// Response containing flashcards for a user
 @freezed
@@ -51,6 +52,13 @@ class FlashcardListResponse with _$FlashcardListResponse {
     required List<Flashcard> flashcards,
   }) = _FlashcardListResponse;
 
-  factory FlashcardListResponse.fromJson(Map<String, Object?> json) =>
-      _$FlashcardListResponseFromJson(json);
+  factory FlashcardListResponse.fromJson(Map<String, Object?> json) {
+    final flashcardsJson = json['flashcards'] as List<dynamic>? ?? [];
+    return FlashcardListResponse(
+      message: json['message'] as String? ?? '',
+      flashcards: flashcardsJson
+          .map((e) => Flashcard.fromJson(e as Map<String, Object?>))
+          .toList(),
+    );
+  }
 }

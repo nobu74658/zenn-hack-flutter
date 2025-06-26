@@ -30,20 +30,20 @@ mixin _$Flashcard {
   /// List of meanings
   List<Meaning> get meanings => throw _privateConstructorUsedError;
 
-  /// Media object
-  Media get media => throw _privateConstructorUsedError;
+  /// Media object (optional for API responses)
+  Media? get media => throw _privateConstructorUsedError;
 
-  /// Version number
+  /// Version number (defaults to 1)
   int get version => throw _privateConstructorUsedError;
 
-  /// User memo
+  /// User memo (defaults to empty string)
   String get memo => throw _privateConstructorUsedError;
 
-  /// Whether the user has mastered this card
+  /// Whether the user has mastered this card (defaults to false)
   bool get checkFlag => throw _privateConstructorUsedError;
 
-  /// Creation timestamp
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  /// Creation timestamp (defaults to current time)
+  DateTime? get createdAt => throw _privateConstructorUsedError;
 
   /// Serializes this Flashcard to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -64,15 +64,15 @@ abstract class $FlashcardCopyWith<$Res> {
     String flashcardId,
     Word word,
     List<Meaning> meanings,
-    Media media,
+    Media? media,
     int version,
     String memo,
     bool checkFlag,
-    DateTime createdAt,
+    DateTime? createdAt,
   });
 
   $WordCopyWith<$Res> get word;
-  $MediaCopyWith<$Res> get media;
+  $MediaCopyWith<$Res>? get media;
 }
 
 /// @nodoc
@@ -93,11 +93,11 @@ class _$FlashcardCopyWithImpl<$Res, $Val extends Flashcard>
     Object? flashcardId = null,
     Object? word = null,
     Object? meanings = null,
-    Object? media = null,
+    Object? media = freezed,
     Object? version = null,
     Object? memo = null,
     Object? checkFlag = null,
-    Object? createdAt = null,
+    Object? createdAt = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -117,10 +117,10 @@ class _$FlashcardCopyWithImpl<$Res, $Val extends Flashcard>
                     : meanings // ignore: cast_nullable_to_non_nullable
                         as List<Meaning>,
             media:
-                null == media
+                freezed == media
                     ? _value.media
                     : media // ignore: cast_nullable_to_non_nullable
-                        as Media,
+                        as Media?,
             version:
                 null == version
                     ? _value.version
@@ -137,10 +137,10 @@ class _$FlashcardCopyWithImpl<$Res, $Val extends Flashcard>
                     : checkFlag // ignore: cast_nullable_to_non_nullable
                         as bool,
             createdAt:
-                null == createdAt
+                freezed == createdAt
                     ? _value.createdAt
                     : createdAt // ignore: cast_nullable_to_non_nullable
-                        as DateTime,
+                        as DateTime?,
           )
           as $Val,
     );
@@ -160,8 +160,12 @@ class _$FlashcardCopyWithImpl<$Res, $Val extends Flashcard>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $MediaCopyWith<$Res> get media {
-    return $MediaCopyWith<$Res>(_value.media, (value) {
+  $MediaCopyWith<$Res>? get media {
+    if (_value.media == null) {
+      return null;
+    }
+
+    return $MediaCopyWith<$Res>(_value.media!, (value) {
       return _then(_value.copyWith(media: value) as $Val);
     });
   }
@@ -180,17 +184,17 @@ abstract class _$$FlashcardImplCopyWith<$Res>
     String flashcardId,
     Word word,
     List<Meaning> meanings,
-    Media media,
+    Media? media,
     int version,
     String memo,
     bool checkFlag,
-    DateTime createdAt,
+    DateTime? createdAt,
   });
 
   @override
   $WordCopyWith<$Res> get word;
   @override
-  $MediaCopyWith<$Res> get media;
+  $MediaCopyWith<$Res>? get media;
 }
 
 /// @nodoc
@@ -210,11 +214,11 @@ class __$$FlashcardImplCopyWithImpl<$Res>
     Object? flashcardId = null,
     Object? word = null,
     Object? meanings = null,
-    Object? media = null,
+    Object? media = freezed,
     Object? version = null,
     Object? memo = null,
     Object? checkFlag = null,
-    Object? createdAt = null,
+    Object? createdAt = freezed,
   }) {
     return _then(
       _$FlashcardImpl(
@@ -234,10 +238,10 @@ class __$$FlashcardImplCopyWithImpl<$Res>
                 : meanings // ignore: cast_nullable_to_non_nullable
                     as List<Meaning>,
         media:
-            null == media
+            freezed == media
                 ? _value.media
                 : media // ignore: cast_nullable_to_non_nullable
-                    as Media,
+                    as Media?,
         version:
             null == version
                 ? _value.version
@@ -254,10 +258,10 @@ class __$$FlashcardImplCopyWithImpl<$Res>
                 : checkFlag // ignore: cast_nullable_to_non_nullable
                     as bool,
         createdAt:
-            null == createdAt
+            freezed == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
-                    as DateTime,
+                    as DateTime?,
       ),
     );
   }
@@ -270,11 +274,11 @@ class _$FlashcardImpl implements _Flashcard {
     required this.flashcardId,
     required this.word,
     required final List<Meaning> meanings,
-    required this.media,
-    required this.version,
-    required this.memo,
-    required this.checkFlag,
-    required this.createdAt,
+    this.media,
+    this.version = 1,
+    this.memo = '',
+    this.checkFlag = false,
+    this.createdAt,
   }) : _meanings = meanings;
 
   factory _$FlashcardImpl.fromJson(Map<String, dynamic> json) =>
@@ -299,25 +303,28 @@ class _$FlashcardImpl implements _Flashcard {
     return EqualUnmodifiableListView(_meanings);
   }
 
-  /// Media object
+  /// Media object (optional for API responses)
   @override
-  final Media media;
+  final Media? media;
 
-  /// Version number
+  /// Version number (defaults to 1)
   @override
+  @JsonKey()
   final int version;
 
-  /// User memo
+  /// User memo (defaults to empty string)
   @override
+  @JsonKey()
   final String memo;
 
-  /// Whether the user has mastered this card
+  /// Whether the user has mastered this card (defaults to false)
   @override
+  @JsonKey()
   final bool checkFlag;
 
-  /// Creation timestamp
+  /// Creation timestamp (defaults to current time)
   @override
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   @override
   String toString() {
@@ -375,11 +382,11 @@ abstract class _Flashcard implements Flashcard {
     required final String flashcardId,
     required final Word word,
     required final List<Meaning> meanings,
-    required final Media media,
-    required final int version,
-    required final String memo,
-    required final bool checkFlag,
-    required final DateTime createdAt,
+    final Media? media,
+    final int version,
+    final String memo,
+    final bool checkFlag,
+    final DateTime? createdAt,
   }) = _$FlashcardImpl;
 
   factory _Flashcard.fromJson(Map<String, dynamic> json) =
@@ -397,25 +404,25 @@ abstract class _Flashcard implements Flashcard {
   @override
   List<Meaning> get meanings;
 
-  /// Media object
+  /// Media object (optional for API responses)
   @override
-  Media get media;
+  Media? get media;
 
-  /// Version number
+  /// Version number (defaults to 1)
   @override
   int get version;
 
-  /// User memo
+  /// User memo (defaults to empty string)
   @override
   String get memo;
 
-  /// Whether the user has mastered this card
+  /// Whether the user has mastered this card (defaults to false)
   @override
   bool get checkFlag;
 
-  /// Creation timestamp
+  /// Creation timestamp (defaults to current time)
   @override
-  DateTime get createdAt;
+  DateTime? get createdAt;
 
   /// Create a copy of Flashcard
   /// with the given fields replaced by the non-null parameter values.
@@ -425,12 +432,6 @@ abstract class _Flashcard implements Flashcard {
       throw _privateConstructorUsedError;
 }
 
-FlashcardListResponse _$FlashcardListResponseFromJson(
-  Map<String, dynamic> json,
-) {
-  return _FlashcardListResponse.fromJson(json);
-}
-
 /// @nodoc
 mixin _$FlashcardListResponse {
   /// Success message
@@ -438,9 +439,6 @@ mixin _$FlashcardListResponse {
 
   /// List of flashcards
   List<Flashcard> get flashcards => throw _privateConstructorUsedError;
-
-  /// Serializes this FlashcardListResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of FlashcardListResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -540,15 +538,12 @@ class __$$FlashcardListResponseImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$FlashcardListResponseImpl implements _FlashcardListResponse {
   const _$FlashcardListResponseImpl({
     required this.message,
     required final List<Flashcard> flashcards,
   }) : _flashcards = flashcards;
-
-  factory _$FlashcardListResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$FlashcardListResponseImplFromJson(json);
 
   /// Success message
   @override
@@ -582,7 +577,6 @@ class _$FlashcardListResponseImpl implements _FlashcardListResponse {
             ));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
     runtimeType,
@@ -601,11 +595,6 @@ class _$FlashcardListResponseImpl implements _FlashcardListResponse {
         this,
         _$identity,
       );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$FlashcardListResponseImplToJson(this);
-  }
 }
 
 abstract class _FlashcardListResponse implements FlashcardListResponse {
@@ -613,9 +602,6 @@ abstract class _FlashcardListResponse implements FlashcardListResponse {
     required final String message,
     required final List<Flashcard> flashcards,
   }) = _$FlashcardListResponseImpl;
-
-  factory _FlashcardListResponse.fromJson(Map<String, dynamic> json) =
-      _$FlashcardListResponseImpl.fromJson;
 
   /// Success message
   @override

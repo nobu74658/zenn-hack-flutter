@@ -331,10 +331,6 @@ abstract class _Meaning implements Meaning {
       throw _privateConstructorUsedError;
 }
 
-MeaningsResponse _$MeaningsResponseFromJson(Map<String, dynamic> json) {
-  return _MeaningsResponse.fromJson(json);
-}
-
 /// @nodoc
 mixin _$MeaningsResponse {
   /// Success message
@@ -342,9 +338,6 @@ mixin _$MeaningsResponse {
 
   /// List of meanings for the word
   List<Meaning> get meanings => throw _privateConstructorUsedError;
-
-  /// Serializes this MeaningsResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of MeaningsResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -440,15 +433,12 @@ class __$$MeaningsResponseImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$MeaningsResponseImpl implements _MeaningsResponse {
   const _$MeaningsResponseImpl({
     required this.message,
     required final List<Meaning> meanings,
   }) : _meanings = meanings;
-
-  factory _$MeaningsResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$MeaningsResponseImplFromJson(json);
 
   /// Success message
   @override
@@ -479,7 +469,6 @@ class _$MeaningsResponseImpl implements _MeaningsResponse {
             const DeepCollectionEquality().equals(other._meanings, _meanings));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
     runtimeType,
@@ -497,11 +486,6 @@ class _$MeaningsResponseImpl implements _MeaningsResponse {
         this,
         _$identity,
       );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$MeaningsResponseImplToJson(this);
-  }
 }
 
 abstract class _MeaningsResponse implements MeaningsResponse {
@@ -509,9 +493,6 @@ abstract class _MeaningsResponse implements MeaningsResponse {
     required final String message,
     required final List<Meaning> meanings,
   }) = _$MeaningsResponseImpl;
-
-  factory _MeaningsResponse.fromJson(Map<String, dynamic> json) =
-      _$MeaningsResponseImpl.fromJson;
 
   /// Success message
   @override

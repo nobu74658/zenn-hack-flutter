@@ -17,17 +17,19 @@ class FlashcardItem extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: CachedNetworkImage(
-              imageUrl: flashcard.media.mediaUrls.first,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              placeholder:
-                  (context, url) =>
-                      const Center(child: CircularProgressIndicator()),
-              errorWidget:
-                  (context, url, error) =>
-                      const Center(child: Icon(Icons.error)),
-            ),
+            child: flashcard.media?.mediaUrls.isNotEmpty == true
+                ? CachedNetworkImage(
+                    imageUrl: flashcard.media!.mediaUrls.first,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    placeholder: (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        const Center(child: Icon(Icons.error)),
+                  )
+                : const Center(
+                    child: Icon(Icons.image_not_supported, size: 48),
+                  ),
           ),
           Expanded(
             flex: 3,

@@ -40,20 +40,3 @@ const _$PartOfSpeechEnumMap = {
   PartOfSpeech.conjunction: 'conjunction',
   PartOfSpeech.idiom: 'idiom',
 };
-
-_$MeaningsResponseImpl _$$MeaningsResponseImplFromJson(
-  Map<String, dynamic> json,
-) => _$MeaningsResponseImpl(
-  message: json['message'] as String,
-  meanings:
-      (json['meanings'] as List<dynamic>)
-          .map((e) => Meaning.fromJson(e as Map<String, dynamic>))
-          .toList(),
-);
-
-Map<String, dynamic> _$$MeaningsResponseImplToJson(
-  _$MeaningsResponseImpl instance,
-) => <String, dynamic>{
-  'message': instance.message,
-  'meanings': instance.meanings,
-};

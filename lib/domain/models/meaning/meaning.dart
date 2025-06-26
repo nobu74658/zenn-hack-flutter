@@ -32,6 +32,7 @@ class Meaning with _$Meaning {
       _$MeaningFromJson(json);
 }
 
+
 /// Response containing multiple meanings for a word
 @freezed
 class MeaningsResponse with _$MeaningsResponse {
@@ -43,6 +44,13 @@ class MeaningsResponse with _$MeaningsResponse {
     required List<Meaning> meanings,
   }) = _MeaningsResponse;
 
-  factory MeaningsResponse.fromJson(Map<String, Object?> json) =>
-      _$MeaningsResponseFromJson(json);
+  factory MeaningsResponse.fromJson(Map<String, Object?> json) {
+    final meaningsJson = json['meanings'] as List<dynamic>? ?? [];
+    return MeaningsResponse(
+      message: json['message'] as String? ?? '',
+      meanings: meaningsJson
+          .map((e) => Meaning.fromJson(e as Map<String, Object?>))
+          .toList(),
+    );
+  }
 }

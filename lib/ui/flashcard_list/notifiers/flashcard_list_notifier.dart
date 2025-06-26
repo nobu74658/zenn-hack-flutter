@@ -125,7 +125,8 @@ class FlashcardListNotifier extends _$FlashcardListNotifier {
         case SortOption.status:
           comparison = (a.checkFlag ? 1 : 0).compareTo(b.checkFlag ? 1 : 0);
         case SortOption.dateAdded:
-          comparison = a.createdAt.compareTo(b.createdAt);
+          comparison = (a.createdAt ?? DateTime.now())
+              .compareTo(b.createdAt ?? DateTime.now());
       }
       return isAscending ? comparison : -comparison;
     });

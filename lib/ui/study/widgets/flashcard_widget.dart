@@ -74,8 +74,8 @@ class FlashcardWidget extends StatelessWidget {
     final primaryMeaning =
         flashcard.meanings.isNotEmpty ? flashcard.meanings.first : null;
     final imageUrl =
-        flashcard.media.mediaUrls.isNotEmpty
-            ? flashcard.media.mediaUrls.first
+        flashcard.media?.mediaUrls.isNotEmpty == true
+            ? flashcard.media!.mediaUrls.first
             : null;
 
     return Container(

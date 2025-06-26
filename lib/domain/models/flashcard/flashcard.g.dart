@@ -14,11 +14,17 @@ _$FlashcardImpl _$$FlashcardImplFromJson(Map<String, dynamic> json) =>
           (json['meanings'] as List<dynamic>)
               .map((e) => Meaning.fromJson(e as Map<String, dynamic>))
               .toList(),
-      media: Media.fromJson(json['media'] as Map<String, dynamic>),
-      version: (json['version'] as num).toInt(),
-      memo: json['memo'] as String,
-      checkFlag: json['checkFlag'] as bool,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      media:
+          json['media'] == null
+              ? null
+              : Media.fromJson(json['media'] as Map<String, dynamic>),
+      version: (json['version'] as num?)?.toInt() ?? 1,
+      memo: json['memo'] as String? ?? '',
+      checkFlag: json['checkFlag'] as bool? ?? false,
+      createdAt:
+          json['createdAt'] == null
+              ? null
+              : DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$$FlashcardImplToJson(_$FlashcardImpl instance) =>
@@ -30,22 +36,5 @@ Map<String, dynamic> _$$FlashcardImplToJson(_$FlashcardImpl instance) =>
       'version': instance.version,
       'memo': instance.memo,
       'checkFlag': instance.checkFlag,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
     };
-
-_$FlashcardListResponseImpl _$$FlashcardListResponseImplFromJson(
-  Map<String, dynamic> json,
-) => _$FlashcardListResponseImpl(
-  message: json['message'] as String,
-  flashcards:
-      (json['flashcards'] as List<dynamic>)
-          .map((e) => Flashcard.fromJson(e as Map<String, dynamic>))
-          .toList(),
-);
-
-Map<String, dynamic> _$$FlashcardListResponseImplToJson(
-  _$FlashcardListResponseImpl instance,
-) => <String, dynamic>{
-  'message': instance.message,
-  'flashcards': instance.flashcards,
-};
