@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/utils/result.dart';
 import '../../../data/repositories/providers.dart';
 import '../../../domain/models/flashcard/flashcard.dart';
+import '../../auth/notifiers/auth_notifier.dart';
 
 part 'swipe_study_notifier.g.dart';
 
@@ -84,12 +85,25 @@ class SwipeStudyNotifier extends _$SwipeStudyNotifier {
   @override
   Future<SwipeStudyState> build() async {
     try {
+      // Get authenticated user from auth service
+      final authState = await ref.watch(authNotifierProvider.future);
+
+      if (!authState.isAuthenticated || authState.user == null) {
+        return const SwipeStudyState(
+          flashcards: [],
+          currentIndex: 0,
+          isCardFlipped: false,
+          isLoading: false,
+          error: 'ユーザーが認証されていません',
+        );
+      }
+
       // Get flashcard repository
       final repository = ref.read(flashcardRepositoryProvider);
 
-      // Fetch flashcards for the current user
-      // For demo purposes, using a mock user ID
-      final result = await repository.getUserFlashcards('demo_user');
+      // Fetch flashcards for the authenticated user
+      final userId = authState.user!.uid;
+      final result = await repository.getUserFlashcards(userId);
 
       switch (result) {
         case Ok(:final data):

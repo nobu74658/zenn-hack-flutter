@@ -7,7 +7,7 @@ part of 'flashcard_list_notifier.dart';
 // **************************************************************************
 
 String _$flashcardListNotifierHash() =>
-    r'ea2588cb225326697a1374a62d244f4e00e4953b';
+    r'e3232f4a40fa96ae031a114496fc5eabfe76d45f';
 
 /// See also [FlashcardListNotifier].
 @ProviderFor(FlashcardListNotifier)

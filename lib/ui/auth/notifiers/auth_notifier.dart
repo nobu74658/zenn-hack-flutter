@@ -1,111 +1,139 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/services/auth_service.dart';
 import '../../../core/utils/result.dart';
-import '../../../data/services/providers.dart';
-import '../../../domain/models/user/user.dart';
+import '../../../data/repositories/auth/auth_repository.dart';
+import '../../../data/repositories/auth/providers.dart';
+import '../../../domain/models/auth/auth_state.dart';
+import '../../../domain/models/auth/auth_user.dart';
 
-part 'auth_notifier.freezed.dart';
 part 'auth_notifier.g.dart';
 
-/// Authentication state
-@freezed
-class AuthState with _$AuthState {
-  const factory AuthState.initial() = _Initial;
-  const factory AuthState.loading() = _Loading;
-  const factory AuthState.authenticated(User user) = _Authenticated;
-  const factory AuthState.unauthenticated() = _Unauthenticated;
-  const factory AuthState.error(String message) = _Error;
-}
-
-/// Authentication notifier for managing auth state
+/// Firebase Authentication notifier
 @riverpod
 class AuthNotifier extends _$AuthNotifier {
   final _logger = Logger();
+  AuthRepository? _authRepository;
 
   @override
-  AuthState build() {
-    _checkInitialAuthState();
-    return const AuthState.initial();
+  Future<AuthState> build() async {
+    _authRepository = await ref.read(authRepositoryProvider.future);
+    _initializeAuthStateListener();
+    return _getInitialAuthState();
   }
 
-  /// Check if user is already authenticated on app start
-  Future<void> _checkInitialAuthState() async {
-    final authService = ref.read(authServiceProvider);
-    final result = await authService.getCurrentUser();
-
-    state = switch (result) {
-      Ok() =>
-        result.data != null
-            ? AuthState.authenticated(result.data!)
-            : const AuthState.unauthenticated(),
-      Error() => AuthState.error(result.exception.message),
-    };
+  /// Initialize auth state listener
+  void _initializeAuthStateListener() {
+    _authRepository?.authStateChanges().listen((user) {
+      _logger.d('Auth state changed: ${user?.uid}');
+      state = AsyncValue.data(
+        state.value?.copyWith(
+              user: user,
+              isAuthenticated: user != null,
+              error: null,
+            ) ??
+            AuthState(user: user, isAuthenticated: user != null),
+      );
+    });
   }
 
-  /// Login with user credentials
-  Future<void> login(String userId, String email, String userName) async {
-    state = const AuthState.loading();
-    _logger.i('Attempting login for user: $userId');
-
-    try {
-      final user = User(userId: userId, email: email, userName: userName);
-      final authService = ref.read(authServiceProvider);
-      final result = await authService.login(user);
-
-      state = switch (result) {
-        Ok() => () {
-          _logger.i('Login successful for user: $userId');
-          return AuthState.authenticated(user);
-        }(),
-        Error() => () {
-          _logger.e('Login failed for user: $userId', error: result.exception);
-          return AuthState.error(result.exception.message);
-        }(),
-      };
-    } on Exception catch (e) {
-      _logger.e('Unexpected error during login', error: e);
-      state = AuthState.error('ログインに失敗しました: $e');
-    }
+  /// Get initial authentication state
+  Future<AuthState> _getInitialAuthState() async {
+    final result = await _authRepository!.getCurrentUser();
+    return result.when<AuthState>(
+      ok: (AuthUser? user) {
+        _logger.d('Initialized with current user: ${user?.uid}');
+        return AuthState(user: user, isAuthenticated: user != null);
+      },
+      error: (error) {
+        _logger.e('Failed to get current user: $error');
+        return AuthState(error: error.message);
+      },
+    );
   }
 
-  /// Logout current user
-  Future<void> logout() async {
-    state = const AuthState.loading();
-    _logger.i('Attempting logout');
+  /// Sign in with email and password
+  Future<void> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    state = AsyncValue.data(
+      state.value?.copyWith(isLoading: true, error: null) ??
+          const AuthState(isLoading: true),
+    );
 
-    try {
-      final authService = ref.read(authServiceProvider);
-      final result = await authService.logout();
+    _logger.d('Attempting sign in with email: $email');
 
-      state = switch (result) {
-        Ok() => () {
-          _logger.i('Logout successful');
-          return const AuthState.unauthenticated();
-        }(),
-        Error() => () {
-          _logger.e('Logout failed', error: result.exception);
-          return AuthState.error(result.exception.message);
-        }(),
-      };
-    } on Exception catch (e) {
-      _logger.e('Unexpected error during logout', error: e);
-      state = AuthState.error('ログアウトに失敗しました: $e');
-    }
+    final result = await _authRepository!.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    result.when<void>(
+      ok: (AuthUser user) {
+        _logger.i('Successfully signed in: ${user.uid}');
+        state = AsyncValue.data(
+          state.value?.copyWith(
+                user: user,
+                isAuthenticated: true,
+                isLoading: false,
+                error: null,
+              ) ??
+              AuthState(user: user, isAuthenticated: true),
+        );
+      },
+      error: (error) {
+        _logger.e('Sign in failed: $error');
+        state = AsyncValue.data(
+          state.value?.copyWith(
+                error: error.message,
+                isLoading: false,
+                isAuthenticated: false,
+              ) ??
+              AuthState(error: error.message),
+        );
+      },
+    );
+  }
+
+  /// Sign out current user
+  Future<void> signOut() async {
+    state = AsyncValue.data(
+      state.value?.copyWith(isLoading: true, error: null) ??
+          const AuthState(isLoading: true),
+    );
+
+    _logger.d('Attempting sign out');
+
+    final result = await _authRepository!.signOut();
+
+    result.when<void>(
+      ok: (_) {
+        _logger.i('Successfully signed out');
+        state = AsyncValue.data(
+          state.value?.copyWith(
+                user: null,
+                isAuthenticated: false,
+                isLoading: false,
+                error: null,
+              ) ??
+              const AuthState(),
+        );
+      },
+      error: (error) {
+        _logger.e('Sign out failed: $error');
+        state = AsyncValue.data(
+          state.value?.copyWith(error: error.message, isLoading: false) ??
+              AuthState(error: error.message),
+        );
+      },
+    );
   }
 
   /// Clear error state
   void clearError() {
-    if (state case _Error()) {
-      state = const AuthState.unauthenticated();
+    if (state.value != null) {
+      state = AsyncValue.data(state.value!.copyWith(error: null));
     }
   }
 }
-
-/// Auth service provider
-final authServiceProvider = Provider<AuthService>((ref) {
-  final sharedPreferences = ref.watch(sharedPreferencesProvider);
-  return AuthService(sharedPreferences);
-});

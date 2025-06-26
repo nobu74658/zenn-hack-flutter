@@ -5,6 +5,7 @@ import '../../../data/repositories/providers.dart';
 import '../../../domain/models/common/enums.dart';
 import '../../../domain/models/flashcard/flashcard.dart';
 import '../../../domain/models/flashcard_list/flashcard_list_state.dart';
+import '../../auth/notifiers/auth_notifier.dart';
 
 part 'flashcard_list_notifier.g.dart';
 
@@ -12,10 +13,20 @@ part 'flashcard_list_notifier.g.dart';
 class FlashcardListNotifier extends _$FlashcardListNotifier {
   @override
   FutureOr<FlashcardListState> build() async {
-    // TODO(you): Get userId from auth service
-    const userId = '1';
-    final result =
-        await ref.read(flashcardRepositoryProvider).getUserFlashcards(userId);
+    // Get authenticated user from auth service
+    final authState = await ref.watch(authNotifierProvider.future);
+
+    if (!authState.isAuthenticated || authState.user == null) {
+      return FlashcardListState(
+        error: Exception('ユーザーが認証されていません'),
+        isLoading: false,
+      );
+    }
+
+    final userId = authState.user!.uid;
+    final result = await ref
+        .read(flashcardRepositoryProvider)
+        .getUserFlashcards(userId);
 
     switch (result) {
       case Ok(data: final flashcards):

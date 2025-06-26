@@ -6,7 +6,7 @@ part of 'auth_form_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authFormNotifierHash() => r'3320768d521e897958f002fceae77a2d64f30aea';
+String _$authFormNotifierHash() => r'885e9aa1d9b04aa24fd5c86c4bc6da3aa3109b8a';
 
 /// Form validation notifier
 ///

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/router/route_names.dart';
+import '../auth/notifiers/auth_notifier.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
@@ -12,11 +13,38 @@ class SplashScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
-      // Navigate to home after 2 seconds
-      Future.delayed(const Duration(seconds: 2), () {
-        if (context.mounted) {
-          context.go(RouteNames.home);
+      // Check authentication state and navigate accordingly
+      Future<void>.delayed(const Duration(seconds: 2)).then((_) {
+        if (!context.mounted) {
+          return;
         }
+
+        // Use Future to delay provider access after build cycle
+        Future(() {
+          if (!context.mounted) {
+            return;
+          }
+
+          ref
+              .read(authNotifierProvider)
+              .when(
+                data: (state) {
+                  if (state.isAuthenticated) {
+                    context.go(RouteNames.home);
+                  } else {
+                    context.go(RouteNames.login);
+                  }
+                },
+                loading: () {
+                  // If still loading, default to login screen
+                  context.go(RouteNames.login);
+                },
+                error: (error, stackTrace) {
+                  // On error, go to login screen
+                  context.go(RouteNames.login);
+                },
+              );
+        });
       });
       return null;
     }, []);

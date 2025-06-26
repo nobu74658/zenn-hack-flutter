@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/router/route_names.dart';
+import '../../../domain/models/auth/auth_state.dart';
 import '../notifiers/auth_form_notifier.dart';
 import '../notifiers/auth_notifier.dart';
 import 'auth_button.dart';
@@ -19,26 +20,23 @@ class SignupScreen extends HookConsumerWidget {
     final formState = ref.watch(authFormNotifierProvider);
 
     // Listen to auth state changes
-    ref.listen<AuthState>(authNotifierProvider, (previous, next) {
-      next.when(
-        initial: () {},
-        loading: () {},
-        authenticated: (user) {
+    ref.listen(authNotifierProvider, (previous, next) {
+      if (next.hasValue) {
+        final state = next.value!;
+        if (state.isAuthenticated) {
           // Navigate to home on successful signup
           context.go(RouteNames.home);
-        },
-        unauthenticated: () {},
-        error: (message) {
+        } else if (state.error != null) {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(message),
+              content: Text(state.error!),
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
             ),
           );
-        },
-      );
+        }
+      }
     });
 
     return Scaffold(
@@ -255,12 +253,16 @@ class SignupScreen extends HookConsumerWidget {
   Widget _buildSignupButton(
     BuildContext context,
     WidgetRef ref,
-    AuthState authState,
+    AsyncValue<AuthState> authState,
     FormValidationState formState,
   ) {
-    final isLoading = authState.whenOrNull(loading: () => true) ?? false;
-    final formNotifier = ref.read(authFormNotifierProvider.notifier);
-    final isValid = formNotifier.validateForSignup();
+    final isLoading = authState.value?.isLoading ?? false;
+    // Check if form is valid without triggering validation
+    final isValid =
+        formState.email.isNotEmpty &&
+        formState.userId.isNotEmpty &&
+        formState.userName.isNotEmpty &&
+        formState.agreeTerms;
 
     return AuthButton(
       onPressed:
@@ -306,7 +308,11 @@ class SignupScreen extends HookConsumerWidget {
     final formNotifier = ref.read(authFormNotifierProvider.notifier);
 
     if (formNotifier.validateForSignup()) {
-      authNotifier.login(formState.userId, formState.email, formState.userName);
+      // For now, use sign in as signup is not needed
+      authNotifier.signInWithEmailAndPassword(
+        email: formState.email,
+        password: formState.password,
+      );
 
       // Clear form after successful signup
       formNotifier.clear();
