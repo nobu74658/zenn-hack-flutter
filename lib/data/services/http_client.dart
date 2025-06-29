@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 import '../../core/constants/app_config.dart';
@@ -76,6 +77,7 @@ class HttpClient {
         options: options,
       );
     } on DioException catch (e) {
+      debugPrint('DioException occurred: $e');
       throw _handleDioException(e);
     }
   }

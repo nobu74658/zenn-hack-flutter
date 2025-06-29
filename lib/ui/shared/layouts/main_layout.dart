@@ -31,7 +31,7 @@ class MainLayout extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
         BottomNavigationBarItem(icon: Icon(Icons.play_arrow), label: '学習'),
         BottomNavigationBarItem(icon: Icon(Icons.list), label: '単語帳'),
-        BottomNavigationBarItem(icon: Icon(Icons.analytics), label: '統計'),
+        // BottomNavigationBarItem(icon: Icon(Icons.analytics), label: '統計'),
       ],
     );
   }

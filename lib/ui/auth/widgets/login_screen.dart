@@ -70,15 +70,15 @@ class LoginScreen extends HookConsumerWidget {
                 // Login button
                 _buildLoginButton(context, ref, authState, formState),
 
-                const SizedBox(height: 24),
+                // const SizedBox(height: 24),
 
                 // Sign up link
-                _buildSignUpLink(context),
+                // _buildSignUpLink(context),
 
-                const SizedBox(height: 16),
+                // const SizedBox(height: 16),
 
                 // Info text
-                _buildInfoText(context),
+                // _buildInfoText(context),
               ],
             ),
           ),

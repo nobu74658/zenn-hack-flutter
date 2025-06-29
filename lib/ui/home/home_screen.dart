@@ -56,14 +56,6 @@ class HomeScreen extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tinder風スワイプで効率的な単語学習',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColors.textSub),
-                    textAlign: TextAlign.center,
-                  ),
                 ],
               ),
             ),
@@ -119,51 +111,24 @@ class HomeScreen extends ConsumerWidget {
                         ),
                       ),
 
-                      const SizedBox(width: 16),
+                      // const SizedBox(width: 16),
 
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => context.go(RouteNames.statistics),
-                          icon: const Icon(Icons.analytics),
-                          label: const Text('統計'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            side: const BorderSide(color: AppColors.primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: OutlinedButton.icon(
+                      //     onPressed: () => context.go(RouteNames.statistics),
+                      //     icon: const Icon(Icons.analytics),
+                      //     label: const Text('統計'),
+                      //     style: OutlinedButton.styleFrom(
+                      //       foregroundColor: AppColors.primary,
+                      //       side: const BorderSide(color: AppColors.primary),
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(12),
+                      //       ),
+                      //       padding: const EdgeInsets.symmetric(vertical: 16),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
-                  ),
-                ],
-              ),
-            ),
-
-            // App Info
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.bgSecondary,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: AppColors.textSub,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      '読み取り専用暗記アプリ - オフライン学習対応',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: AppColors.textSub),
-                    ),
                   ),
                 ],
               ),
